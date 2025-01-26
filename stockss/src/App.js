@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
+import "./App.css";
 
 export default function StockCalculator() {
-  const [amount, setAmount] = useState(0);
-  const [slPercent, setSlPercent] = useState(0);
-  const [atr, setAtr] = useState(0);
-  const [nValue, setNValue] = useState(0);
+  const [amount, setAmount] = useState("");
+  const [slPercent, setSlPercent] = useState("");
+  const [atr, setAtr] = useState("");
+  const [nValue, setNValue] = useState("");
   const [slValue, setSlValue] = useState(0);
   const [nMultiplied, setNMultiplied] = useState(0);
   const [numShares, setNumShares] = useState(0);
@@ -19,76 +20,71 @@ export default function StockCalculator() {
   }, []);
 
   useEffect(() => {
-    setSlValue((amount * slPercent) / 100);
+    setSlValue((parseFloat(amount) || 0) * (parseFloat(slPercent) || 0) / 100);
   }, [amount, slPercent]);
 
   useEffect(() => {
-    setNMultiplied(nValue * atr);
+    setNMultiplied((parseFloat(nValue) || 0) * (parseFloat(atr) || 0));
   }, [nValue, atr]);
 
   useEffect(() => {
-    if (atr !== 0) {
-      setNumShares(slValue / atr);
+    if (parseFloat(atr) !== 0) {
+      setNumShares((parseFloat(slValue) || 0) / parseFloat(atr));
     }
   }, [slValue, atr]);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <header className="flex justify-between items-center bg-blue-600 text-white p-4 rounded">
-        <div className="text-lg font-bold">Logo</div>
-        <div className="text-xl">Stock Calculator</div>
-        <div>{currentTime.toLocaleString()}</div>
+    <div className="container">
+      <header className="header">
+        <div className="title">Stock Calculator</div>
+        <div className="time">{currentTime.toLocaleString()}</div>
       </header>
 
-      <main className="mt-6 bg-white p-6 rounded shadow">
-        <div className="space-y-4">
-          <div>
-            <label className="block text-gray-700">Enter the amount:</label>
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-              className="w-full border p-2 rounded"
-            />
-          </div>
+      <main className="main">
+        <div className="form-group">
+          <label>Enter the amount:</label>
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className="input"
+          />
+        </div>
 
-          <div>
-            <label className="block text-gray-700">SL (by %):</label>
-            <input
-              type="number"
-              value={slPercent}
-              onChange={(e) => setSlPercent(parseFloat(e.target.value) || 0)}
-              className="w-full border p-2 rounded"
-            />
-            <p className="mt-2 text-gray-600">SL Value: {slValue.toFixed(2)}</p>
-          </div>
+        <div className="form-group">
+          <label>SL (by %):</label>
+          <input
+            type="number"
+            value={slPercent}
+            onChange={(e) => setSlPercent(e.target.value)}
+            className="input"
+          />
+          <p className="result">SL Value: {slValue.toFixed(2)}</p>
+        </div>
 
-          <div>
-            <label className="block text-gray-700">ATR:</label>
-            <input
-              type="number"
-              value={atr}
-              onChange={(e) => setAtr(parseFloat(e.target.value) || 0)}
-              className="w-full border p-2 rounded"
-            />
-          </div>
+        <div className="form-group">
+          <label>ATR:</label>
+          <input
+            type="number"
+            value={atr}
+            onChange={(e) => setAtr(e.target.value)}
+            className="input"
+          />
+        </div>
 
-          <div>
-            <label className="block text-gray-700">N:</label>
-            <input
-              type="number"
-              value={nValue}
-              onChange={(e) => setNValue(parseFloat(e.target.value) || 0)}
-              className="w-full border p-2 rounded"
-            />
-            <p className="mt-2 text-gray-600">N * ATR: {nMultiplied.toFixed(2)}</p>
-          </div>
+        <div className="form-group">
+          <label>N:</label>
+          <input
+            type="number"
+            value={nValue}
+            onChange={(e) => setNValue(e.target.value)}
+            className="input"
+          />
+          <p className="result">N * ATR: {nMultiplied.toFixed(2)}</p>
+        </div>
 
-          <div>
-            <p className="text-gray-700 font-bold">
-              Number of Shares (SL / ATR): {atr !== 0 ? numShares.toFixed(2) : "N/A"}
-            </p>
-          </div>
+        <div className="form-group">
+          <p className="shares">Number of Shares (SL / ATR): {parseFloat(atr) !== 0 ? numShares.toFixed(2) : "N/A"}</p>
         </div>
       </main>
     </div>
