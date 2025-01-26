@@ -6,9 +6,11 @@ export default function StockCalculator() {
   const [slPercent, setSlPercent] = useState("");
   const [atr, setAtr] = useState("");
   const [nValue, setNValue] = useState("");
+  const [stockPrice, setStockPrice] = useState("");
   const [slValue, setSlValue] = useState(0);
   const [nMultiplied, setNMultiplied] = useState(0);
   const [numShares, setNumShares] = useState(0);
+  const [slStockPrice, setSlStockPrice] = useState(0);
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // Update current time every second
@@ -33,9 +35,38 @@ export default function StockCalculator() {
     }
   }, [slValue, atr]);
 
+  useEffect(() => {
+    setSlStockPrice((parseFloat(stockPrice) || 0) - (parseFloat(nValue) || 0));
+  }, [stockPrice, nMultiplied]);
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      const inputs = Array.from(document.querySelectorAll("input"));
+      const index = inputs.indexOf(e.target);
+      if (index > -1 && index < inputs.length - 1) {
+        inputs[index + 1].focus();
+      }
+    }
+  };
+
+  const clearAll = () => {
+    setAmount("");
+    setSlPercent("");
+    setAtr("");
+    setNValue("");
+    setStockPrice("");
+    setSlValue(0);
+    setNMultiplied(0);
+    setNumShares(0);
+    setSlStockPrice(0);
+  };
+
   return (
     <div className="container">
       <header className="header">
+        {/* <div className="logo">
+          <img src="/path-to-your-image.png" alt="Logo" className="logo-image" />
+        </div> */}
         <div className="title">Stock Calculator</div>
         <div className="time">{currentTime.toLocaleString()}</div>
       </header>
@@ -47,6 +78,7 @@ export default function StockCalculator() {
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
+            onKeyDown={handleKeyPress}
             className="input"
           />
         </div>
@@ -57,9 +89,21 @@ export default function StockCalculator() {
             type="number"
             value={slPercent}
             onChange={(e) => setSlPercent(e.target.value)}
+            onKeyDown={handleKeyPress}
             className="input"
           />
           <p className="result">SL Value: {slValue.toFixed(2)}</p>
+        </div>
+
+        <div className="form-group">
+          <label>Enter the stock price:</label>
+          <input
+            type="number"
+            value={stockPrice}
+            onChange={(e) => setStockPrice(e.target.value)}
+            onKeyDown={handleKeyPress}
+            className="input"
+          />
         </div>
 
         <div className="form-group">
@@ -68,6 +112,7 @@ export default function StockCalculator() {
             type="number"
             value={atr}
             onChange={(e) => setAtr(e.target.value)}
+            onKeyDown={handleKeyPress}
             className="input"
           />
         </div>
@@ -78,6 +123,7 @@ export default function StockCalculator() {
             type="number"
             value={nValue}
             onChange={(e) => setNValue(e.target.value)}
+            onKeyDown={handleKeyPress}
             className="input"
           />
           <p className="result">N * ATR: {nMultiplied.toFixed(2)}</p>
@@ -86,6 +132,12 @@ export default function StockCalculator() {
         <div className="form-group">
           <p className="shares">Number of Shares (SL / ATR): {parseFloat(atr) !== 0 ? numShares.toFixed(2) : "N/A"}</p>
         </div>
+
+        <div className="form-group">
+          <p className="shares">SL Stock Price: {slStockPrice.toFixed(2)}</p>
+        </div>
+
+        <button className="clear-button" onClick={clearAll}>Clear All</button>
       </main>
     </div>
   );
