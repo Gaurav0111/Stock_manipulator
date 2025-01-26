@@ -36,7 +36,7 @@ export default function StockCalculator() {
   }, [slValue, atr]);
 
   useEffect(() => {
-    setSlStockPrice((parseFloat(stockPrice) || 0) - (parseFloat(nValue) || 0));
+    setSlStockPrice((parseFloat(stockPrice) || 0) - (parseFloat(nMultiplied) || 0));
   }, [stockPrice, nMultiplied]);
 
   const handleKeyPress = (e) => {
